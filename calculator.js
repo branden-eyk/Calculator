@@ -22,12 +22,13 @@ const displayDiv = document.querySelector('.numbers');
 function handleClick(e){
     const target = e.target;
     const key = target.innerText;
-    console.log(`You clicked ${key}`);
+
     switch (key) {
         case "C":
             clear();
             break;
-        case "+/-":    
+        case "+/-":
+            toggleNegative();    
             break;
         case "%":
             percentage();
@@ -45,7 +46,7 @@ function handleClick(e){
             updateDisplay(key);
             break;     
         case "*":
-            handleOperator('*');
+            handleOperator("*");
             break;     
         case "4":
             updateDisplay(key);
@@ -80,6 +81,10 @@ function handleClick(e){
             }
             break;             
         case "=":
+            if(CALCULATOR.runningTotal !== null){
+                const value = convertToNumber(CALCULATOR.display);
+                clear(`${operate(CALCULATOR.runningTotal, value, CALCULATOR.operator)}`);
+            }
             break;             
         default:
             break;
@@ -110,7 +115,7 @@ function changeDisplay(value){
     displayDiv.innerText = CALCULATOR.display;
 }
 
-function handleOperator(operator){
+function convertToNumber(string){
     const isInt = CALCULATOR.checkDecimal();
     let value = 0;
     if(isInt){
@@ -119,10 +124,16 @@ function handleOperator(operator){
         value = parseFloat(CALCULATOR.display);
     }
 
+    return value;
+}
+
+function handleOperator(operator){
+    const value = convertToNumber(CALCULATOR.display);
+
     if(CALCULATOR.runningTotal === null){
         CALCULATOR.runningTotal = value;
     } else {
-        //Use the runningTotal, the current value displayed and the PREVIOUSly saved operator to update running total
+        //Use the runningTotal, the current value displayed and the PREVIOUSLY saved operator to update running total
         CALCULATOR.runningTotal = operate(CALCULATOR.runningTotal, value, CALCULATOR.operator);
     }
     
@@ -138,7 +149,6 @@ function handleOperator(operator){
 }
 
 function operate(x, y, operator){
-    console.log(`${operator}`);
     switch (operator) {
         case "*":
             return x * y;
@@ -158,12 +168,17 @@ function operate(x, y, operator){
 }
 
 function percentage(){
-    const isInt = CALCULATOR.checkDecimal();
-    const value = CALCULATOR.display;
-    
-    if(isInt){
-        changeDisplay(`${parseInt(value) / 100}`);
+    const value = convertToNumber(CALCULATOR.display);
+    changeDisplay(`${value / 100}`); // String interpolation is needed so indexOf can be used when checkDecimal() is called
+}
+
+function toggleNegative(){
+    let value = CALCULATOR.display;
+    if(value === "0"){
+        return;
+    }else if(value.indexOf('-') === -1){
+        changeDisplay(`-${CALCULATOR.display}`);
     } else {
-        changeDisplay(`${parseFloat(value) / 100}`);
+        changeDisplay(`${CALCULATOR.display.slice(1)}`);
     }
 }
