@@ -34,11 +34,10 @@ function handleClick(e){
             percentage();
             break;
         case "/":
-            if(target.classList.contains('active')){
+            if(changeActive("/", target)){
                 break;
             }
             handleOperator("/");
-            target.classList.add('active');
             break;
         case "7":
             updateDisplay(key);
@@ -50,11 +49,10 @@ function handleClick(e){
             updateDisplay(key);
             break;     
         case "*":
-            if(target.classList.contains('active')){
+            if(changeActive("*", target)){
                 break;
             }
             handleOperator("*");
-            target.classList.add('active');
             break;     
         case "4":
             updateDisplay(key);
@@ -69,11 +67,10 @@ function handleClick(e){
             updateDisplay(key);
             break;     
         case "-":
-            if(target.classList.contains('active')){
+            if(changeActive("-", target)){
                 break;
             }
             handleOperator("-");
-            target.classList.add('active');
             break;     
         case "1":
             updateDisplay(key);
@@ -85,11 +82,10 @@ function handleClick(e){
             updateDisplay(key);
             break;             
         case "+":
-            if(target.classList.contains('active')){
+            if(changeActive("+", target)){
                 break;
             }
             handleOperator("+");
-            target.classList.add('active');
             break;     
         case "0":
             updateDisplay(key)
@@ -111,6 +107,7 @@ function handleClick(e){
 };
 
 function clear(message = "0"){
+    deactivate();
     CALCULATOR.operator = null;
     CALCULATOR.runningTotal = null;
     CALCULATOR.startAgain = true;
@@ -165,12 +162,11 @@ function handleOperator(operator){
 
     CALCULATOR.operator = operator;
     CALCULATOR.startAgain = true;
-    console.log(`Start again is now ${CALCULATOR.startAgain}`);
     changeDisplay(CALCULATOR.runningTotal);
 }
 
 function operate(x, y, operator){
-    deactivate();
+    console.log('operating!')
 
     switch (operator) {
         case "*":
@@ -211,4 +207,17 @@ function deactivate(){
     if (active){
         active.classList.remove('active');
     }
+}
+
+function changeActive(operator, target){
+    const active = document.querySelector('.active');
+    if(active){
+        active.classList.remove('active');
+        CALCULATOR.operator = operator;
+        console.log('Changing Active!')
+        target.classList.add('active');
+        return true;
+    }
+    target.classList.add('active');
+    return false; 
 }
