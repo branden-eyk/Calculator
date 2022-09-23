@@ -34,7 +34,11 @@ function handleClick(e){
             percentage();
             break;
         case "/":
+            if(target.classList.contains('active')){
+                break;
+            }
             handleOperator("/");
+            target.classList.add('active');
             break;
         case "7":
             updateDisplay(key);
@@ -46,7 +50,11 @@ function handleClick(e){
             updateDisplay(key);
             break;     
         case "*":
+            if(target.classList.contains('active')){
+                break;
+            }
             handleOperator("*");
+            target.classList.add('active');
             break;     
         case "4":
             updateDisplay(key);
@@ -55,10 +63,17 @@ function handleClick(e){
             updateDisplay(key);
             break;             
         case "6":
+            if(target.classList.contains('active')){
+                break;
+            }
             updateDisplay(key);
             break;     
         case "-":
+            if(target.classList.contains('active')){
+                break;
+            }
             handleOperator("-");
+            target.classList.add('active');
             break;     
         case "1":
             updateDisplay(key);
@@ -70,7 +85,11 @@ function handleClick(e){
             updateDisplay(key);
             break;             
         case "+":
+            if(target.classList.contains('active')){
+                break;
+            }
             handleOperator("+");
+            target.classList.add('active');
             break;     
         case "0":
             updateDisplay(key)
@@ -82,7 +101,7 @@ function handleClick(e){
             break;             
         case "=":
             if(CALCULATOR.runningTotal !== null){
-                const value = convertToNumber(CALCULATOR.display);
+                const value = convertToNumber();
                 clear(`${operate(CALCULATOR.runningTotal, value, CALCULATOR.operator)}`);
             }
             break;             
@@ -99,6 +118,8 @@ function clear(message = "0"){
 }
 
 function updateDisplay(char){
+    deactivate();
+
     if(char === "."){
         CALCULATOR.display += char;
     } else if(CALCULATOR.startAgain){
@@ -115,7 +136,7 @@ function changeDisplay(value){
     displayDiv.innerText = CALCULATOR.display;
 }
 
-function convertToNumber(string){
+function convertToNumber(){
     const isInt = CALCULATOR.checkDecimal();
     let value = 0;
     if(isInt){
@@ -128,7 +149,7 @@ function convertToNumber(string){
 }
 
 function handleOperator(operator){
-    const value = convertToNumber(CALCULATOR.display);
+    const value = convertToNumber();
 
     if(CALCULATOR.runningTotal === null){
         CALCULATOR.runningTotal = value;
@@ -149,6 +170,8 @@ function handleOperator(operator){
 }
 
 function operate(x, y, operator){
+    deactivate();
+
     switch (operator) {
         case "*":
             return x * y;
@@ -168,7 +191,7 @@ function operate(x, y, operator){
 }
 
 function percentage(){
-    const value = convertToNumber(CALCULATOR.display);
+    const value = convertToNumber();
     changeDisplay(`${value / 100}`); // String interpolation is needed so indexOf can be used when checkDecimal() is called
 }
 
@@ -180,5 +203,12 @@ function toggleNegative(){
         changeDisplay(`-${CALCULATOR.display}`);
     } else {
         changeDisplay(`${CALCULATOR.display.slice(1)}`);
+    }
+}
+
+function deactivate(){
+    const active = document.querySelector('.active');
+    if (active){
+        active.classList.remove('active');
     }
 }
