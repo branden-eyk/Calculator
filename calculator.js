@@ -30,42 +30,46 @@ function handleClick(e){
         case "+/-":    
             break;
         case "%":
+            percentage();
             break;
         case "/":
+            handleOperator("/");
             break;
         case "7":
-            updateDisplay(key)
+            updateDisplay(key);
             break;
         case "8":
-            updateDisplay(key)
+            updateDisplay(key);
             break;         
         case "9":
-            updateDisplay(key)
+            updateDisplay(key);
             break;     
         case "*":
             handleOperator('*');
             break;     
         case "4":
-            updateDisplay(key)
+            updateDisplay(key);
             break;         
         case "5":
-            updateDisplay(key)
+            updateDisplay(key);
             break;             
         case "6":
-            updateDisplay(key)
+            updateDisplay(key);
             break;     
         case "-":
+            handleOperator("-");
             break;     
         case "1":
-            updateDisplay(key)
+            updateDisplay(key);
             break;     
         case "2":
-            updateDisplay(key)
+            updateDisplay(key);
             break;         
         case "3":
-            updateDisplay(key)
+            updateDisplay(key);
             break;             
         case "+":
+            handleOperator("+");
             break;     
         case "0":
             updateDisplay(key)
@@ -82,12 +86,11 @@ function handleClick(e){
     }
 };
 
-function clear(){
-    CALCULATOR.display = "0";
+function clear(message = "0"){
     CALCULATOR.operator = null;
     CALCULATOR.runningTotal = null;
     CALCULATOR.startAgain = true;
-    displayDiv.innerText = "0";
+    changeDisplay(message);
 }
 
 function updateDisplay(char){
@@ -102,6 +105,11 @@ function updateDisplay(char){
     displayDiv.innerText = CALCULATOR.display;
 }
 
+function changeDisplay(value){
+    CALCULATOR.display = value;
+    displayDiv.innerText = CALCULATOR.display;
+}
+
 function handleOperator(operator){
     const isInt = CALCULATOR.checkDecimal();
     let value = 0;
@@ -113,17 +121,24 @@ function handleOperator(operator){
 
     if(CALCULATOR.runningTotal === null){
         CALCULATOR.runningTotal = value;
-        
     } else {
-        CALCULATOR.runningTotal = operate(CALCULATOR.runningTotal, value, operator);
+        //Use the runningTotal, the current value displayed and the PREVIOUSly saved operator to update running total
+        CALCULATOR.runningTotal = operate(CALCULATOR.runningTotal, value, CALCULATOR.operator);
     }
+    
+    if(CALCULATOR.runningTotal === "Error"){
+        clear("Error");
+        return;
+    }
+
     CALCULATOR.operator = operator;
-    CALCULATOR.display = CALCULATOR.runningTotal;
     CALCULATOR.startAgain = true;
-    displayDiv.innerText = CALCULATOR.display;
+    console.log(`Start again is now ${CALCULATOR.startAgain}`);
+    changeDisplay(CALCULATOR.runningTotal);
 }
 
 function operate(x, y, operator){
+    console.log(`${operator}`);
     switch (operator) {
         case "*":
             return x * y;
@@ -132,12 +147,23 @@ function operate(x, y, operator){
         case "-":
             return x - y;
         case "/":
-            if (y = 0){
+            if (y === 0){
                 return "Error";
             } else {
                 return x / y;
             }
         default:
             break;
+    }
+}
+
+function percentage(){
+    const isInt = CALCULATOR.checkDecimal();
+    const value = CALCULATOR.display;
+    
+    if(isInt){
+        changeDisplay(`${parseInt(value) / 100}`);
+    } else {
+        changeDisplay(`${parseFloat(value) / 100}`);
     }
 }
