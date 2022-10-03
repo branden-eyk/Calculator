@@ -1,9 +1,9 @@
 // Object for holding global values as well as functions for interacting with those values
 const CALCULATOR = {
-    display: "0",
-    startAgain: true,
-    runningTotal: null,
-    operator: null,
+    display: "0", //Property for holding the value of what is or should be displayed on "screen"
+    startAgain: true, //Property for tracking when the calculator display should overwrite what is there vs add onto it 
+    runningTotal: null,//Property for tracking the running total as the user continues to add, subtract, multiply, etc. 
+    operator: null,//Property for holding the next operator (*, -, +, etc.) to be used
     checkDecimal: function(){ // function for checking for the presence of a specific character
         const index = this.display.indexOf(".");
         if(index === -1){
@@ -19,6 +19,7 @@ buttons.forEach((button) => button.addEventListener('click', handleClick));
 
 const displayDiv = document.querySelector('.numbers');
 
+//function to be called when a calculator button is clicked
 function handleClick(e){
     const target = e.target;
     const key = target.innerText;
@@ -61,9 +62,6 @@ function handleClick(e){
             updateDisplay(key);
             break;             
         case "6":
-            if(target.classList.contains('active')){
-                break;
-            }
             updateDisplay(key);
             break;     
         case "-":
@@ -106,16 +104,18 @@ function handleClick(e){
     }
 };
 
+//Function for clearing the calculator when the clear button is clicked
 function clear(message = "0"){
     deactivate();
     CALCULATOR.operator = null;
     CALCULATOR.runningTotal = null;
     CALCULATOR.startAgain = true;
-    changeDisplay(message);
+    changeDisplay(message);//If a message has been passed (such as the results after hitting equal) display that on screen
 }
 
+//Function for updating the display; adding to what is already on screen vs replacing it
 function updateDisplay(char){
-    deactivate();
+    deactivate(); //If an operator button is active, deactivate it. This way, once you're done entering the next number, you can press the same operator again
 
     if(char === "."){
         CALCULATOR.display += char;
@@ -128,11 +128,13 @@ function updateDisplay(char){
     displayDiv.innerText = CALCULATOR.display;
 }
 
+//Function for changing the display; replacing what is on screen vs adding to it
 function changeDisplay(value){
     CALCULATOR.display = value;
     displayDiv.innerText = CALCULATOR.display;
 }
 
+//Function for converting what is onscreen to a number so functions and evaluations needing actual number values can be performed
 function convertToNumber(){
     const isInt = CALCULATOR.checkDecimal();
     let value = 0;
@@ -145,6 +147,7 @@ function convertToNumber(){
     return value;
 }
 
+//Function to be executed an operator button on the calculator is clicked
 function handleOperator(operator){
     const value = convertToNumber();
 
@@ -159,12 +162,13 @@ function handleOperator(operator){
         clear("Error");
         return;
     }
-
+    //Update the operator property so that the next time this is run it will use the new operator instead
     CALCULATOR.operator = operator;
     CALCULATOR.startAgain = true;
     changeDisplay(CALCULATOR.runningTotal);
 }
 
+//Function for actually doing the math
 function operate(x, y, operator){
     console.log('operating!')
 
@@ -186,11 +190,13 @@ function operate(x, y, operator){
     }
 }
 
+//Function for when the percentage button is pressed; converts current onscreen value to a percentage
 function percentage(){
     const value = convertToNumber();
     changeDisplay(`${value / 100}`); // String interpolation is needed so indexOf can be used when checkDecimal() is called
 }
 
+//Function for when the positive/negatitve button is pressed; toggles onscreen value to negative or positve
 function toggleNegative(){
     let value = CALCULATOR.display;
     if(value === "0"){
@@ -202,6 +208,7 @@ function toggleNegative(){
     }
 }
 
+//Function for removing the active class from a calculator button
 function deactivate(){
     const active = document.querySelector('.active');
     if (active){
@@ -209,6 +216,7 @@ function deactivate(){
     }
 }
 
+//Function that adds the active class to a button (to change it's CSS appearance) and if another button is active, make it inactive
 function changeActive(operator, target){
     const active = document.querySelector('.active');
     if(active){
