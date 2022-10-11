@@ -119,6 +119,9 @@ function clear(message = "0"){
 //Function for updating the display; adding to what is already on screen vs replacing it
 function updateDisplay(char){
     deactivate(); //If an operator button is active, deactivate it. This way, once you're done entering the next number, you can press the same operator again
+    if(CALCULATOR.display.length === 9){
+        return;
+    }
 
     if(char === "."){
         CALCULATOR.display += char;
