@@ -17,6 +17,9 @@ const CALCULATOR = {
 const buttons = document.querySelectorAll('.button');
 buttons.forEach((button) => button.addEventListener('click', handleClick));
 
+const modeBtn = document.querySelector('.mode');
+modeBtn.addEventListener('click', toggleMode);
+
 const displayDiv = document.querySelector('.numbers');
 
 //function to be called when a calculator button is clicked
@@ -228,4 +231,21 @@ function changeActive(operator, target){
     }
     target.classList.add('active');
     return false; 
+}
+
+//Function for toggling between light and dark display modes
+function toggleMode(){
+    document.body.classList.toggle('dark-body');
+    modeBtn.classList.toggle('light-mode');
+    modeBtn.classList.toggle('dark-mode');
+
+    const buttons = document.querySelectorAll('.num-btn');
+    for (const button of buttons) {
+        button.classList.toggle('light-btn');
+        button.classList.toggle('dark-btn');
+    }
+
+    const screen = document.querySelector('.screen');
+    screen.classList.toggle('light-screen');
+    screen.classList.toggle('dark-screen');
 }
