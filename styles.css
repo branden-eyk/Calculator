@@ -98,3 +98,8 @@ body{
     background-color: rgb(56, 54, 54);
     color: white;
 }
+
+.copyright{
+    position: absolute;
+    bottom: 1em;
+}
